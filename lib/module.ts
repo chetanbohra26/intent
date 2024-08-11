@@ -21,6 +21,7 @@ import { GenericFunction } from "./interfaces";
 import { EventQueueWorker } from "./events/jobListener";
 import { MailerService } from "./mailer";
 import { LocalizationService } from "./localization";
+import { Limiter, LimiterExplorer } from "./limiter";
 
 const providers = [
   ConsoleExplorer,
@@ -43,6 +44,8 @@ const providers = [
   EventQueueWorker,
   MailerService,
   LocalizationService,
+  Limiter,
+  LimiterExplorer,
 ];
 const imports = [DiscoveryModule];
 const exportsArr = [IntentConfig];
