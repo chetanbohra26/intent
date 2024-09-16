@@ -1,5 +1,5 @@
-import { LimiterDriver } from "./interfaces/LimiterDriver";
-import { BaseStrategy } from "./strategies/BaseStrategy";
+import { LimiterDriver } from "./interfaces/limiterDriver";
+import { BaseStrategy } from "./strategies/baseStrategy";
 import { Injectable } from "@nestjs/common";
 import { RedisDriver } from "./drivers/redis";
 import { IntentConfig } from "../config/service";

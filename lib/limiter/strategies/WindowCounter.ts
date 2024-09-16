@@ -1,5 +1,5 @@
-import { BaseStrategy } from "./BaseStrategy";
-import { LimiterDriver } from "../interfaces/LimiterDriver";
+import { BaseStrategy } from "./baseStrategy";
+import { LimiterDriver } from "../interfaces/limiterDriver";
 import { GenericException } from "../../exceptions";
 
 export class WindowCounterStrategy extends BaseStrategy {

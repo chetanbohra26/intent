@@ -1,21 +1,21 @@
-import { Type } from "@nestjs/common";
-import { QueueDrivers } from "../strategy";
+import { Type } from '@nestjs/common';
+import { QueueDrivers } from '../strategy';
 
 export interface QueueDriverOptions {
-  listenerType: "poll" | "subscribe";
+  listenerType: 'poll' | 'subscribe';
   driver: Type<QueueDrivers>;
   [key: string]: string | number | Record<string, any>;
 }
 
 export interface SyncQueueDriverOptions {
-  listenerType: "poll";
-  driver: "sync";
+  listenerType: 'poll';
+  driver: 'sync';
   queue?: string;
 }
 
 export interface SqsQueueDriverOptions {
-  listenerType: "poll";
-  driver: "sqs";
+  listenerType: 'poll';
+  driver: 'sqs';
   region: string;
   apiVersion: string;
   prefix: string;
@@ -28,8 +28,8 @@ export interface SqsQueueDriverOptions {
 }
 
 export interface RedisQueueDriverOptions {
-  listenerType: "poll";
-  driver: "redis";
+  listenerType: 'poll';
+  driver: 'redis';
   host?: string;
   port?: number;
   url?: string;
@@ -40,6 +40,14 @@ export interface RedisQueueDriverOptions {
   prefix: string;
 }
 
+export interface DbQueueDriverOptions {
+  listenerType: 'poll';
+  driver: 'db';
+  connection?: string;
+  table: string;
+  queue: string;
+}
+
 export interface QueueOptions {
   isGlobal?: boolean;
   default: string;
@@ -48,7 +56,8 @@ export interface QueueOptions {
       | SyncQueueDriverOptions
       | SqsQueueDriverOptions
       | RedisQueueDriverOptions
-      | QueueDriverOptions;
+      | QueueDriverOptions
+      | DbQueueDriverOptions;
   };
 }
 

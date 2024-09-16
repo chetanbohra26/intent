@@ -1,6 +1,6 @@
 import { RedisDriverOption } from "../../cache";
 import { Package } from "../../utils";
-import { LimiterDriver } from "../interfaces/LimiterDriver";
+import { LimiterDriver } from "../interfaces/limiterDriver";
 
 export class RedisDriver implements LimiterDriver {
   private client: any;

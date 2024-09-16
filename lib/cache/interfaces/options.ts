@@ -1,4 +1,4 @@
-import { ModuleMetadata, Type } from "@nestjs/common";
+import { ModuleMetadata, Type } from '@nestjs/common';
 
 export interface RedisDriverOption {
   driver?: "redis";
@@ -12,7 +12,7 @@ export interface RedisDriverOption {
 }
 
 export interface InMemoryDriverOption {
-  driver: "memory";
+  driver: 'memory';
   prefix: string;
 }
 
@@ -28,7 +28,7 @@ export interface CacheAsyncOptionsFactory {
   createCacheOptions(): Promise<CacheOptions> | CacheOptions;
 }
 
-export interface CacheAsyncOptions extends Pick<ModuleMetadata, "imports"> {
+export interface CacheAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
   name?: string;
   isGlobal: boolean;
   useExisting?: Type<CacheOptions>;

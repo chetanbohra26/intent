@@ -1,6 +1,6 @@
 import { GenericException } from "../../exceptions";
-import { LimiterDriver } from "../interfaces/LimiterDriver";
-import { BaseStrategy } from "./BaseStrategy";
+import { LimiterDriver } from "../interfaces/limiterDriver";
+import { BaseStrategy } from "./baseStrategy";
 
 export class SlidingWindowCounter extends BaseStrategy {
   constructor(driver: LimiterDriver) {

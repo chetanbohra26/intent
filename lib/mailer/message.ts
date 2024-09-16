@@ -1,19 +1,19 @@
-import { GENERIC_MAIL, RAW_MAIL, VIEW_BASED_MAIL } from "./constants";
+import { render } from '@react-email/render';
+// eslint-disable-next-line import/no-named-as-default
+import IntentMailComponent from '../../resources/mail/emails';
+import { IntentConfig } from '../config/service';
+import { GENERIC_MAIL, RAW_MAIL, VIEW_BASED_MAIL } from './constants';
 import {
   MailData,
   MailMessageMetaPayload,
   MailType,
   MailMessagePayload,
-} from "./interfaces";
-import { MailerService } from "./service";
-import { render } from "@react-email/render";
-import { IntentConfig } from "../config/service";
-import { AttachmentOptions } from "./interfaces/provider";
-import IntentMailComponent from "../../resources/mail/emails";
+} from './interfaces';
+import { AttachmentOptions } from './interfaces/provider';
 
 export class MailMessage {
   private mailSubject?: string;
-  private viewFile?: (payload: Record<string, any>) => JSX.Element;
+  private viewFile?: (payload: Record<string, any>) => Element;
   private templateString?: string;
   private payload: MailMessagePayload = {};
   private mailType: MailType;
@@ -22,7 +22,7 @@ export class MailMessage {
 
   constructor() {
     this.attachments = [];
-    this.compiledHtml = "";
+    this.compiledHtml = '';
     this.mailType = GENERIC_MAIL;
     this.payload = {
       genericFields: [],
@@ -61,8 +61,8 @@ export class MailMessage {
    * @param payload
    */
   view(
-    component: (payload: Record<string, any>) => JSX.Element,
-    payload?: Record<string, any>
+    component: (payload: Record<string, any>) => Element,
+    payload?: Record<string, any>,
   ): this {
     this.mailType = VIEW_BASED_MAIL;
     this.viewFile = component;
@@ -74,19 +74,19 @@ export class MailMessage {
    * Add attachment to the mail
    * @param greeting
    */
-  attach(filename: string, content: Omit<AttachmentOptions, "filename">): this {
+  attach(filename: string, content: Omit<AttachmentOptions, 'filename'>): this {
     this.attachments.push({ filename, ...content });
     return this;
   }
 
   image(url: string, options?: Record<string, any>): this {
-    this.payload.genericFields.push({ type: "image", value: { url, options } });
+    this.payload.genericFields.push({ type: 'image', value: { url, options } });
     return this;
   }
 
   markdown(content: string, options?: Record<string, any>): this {
     this.payload.genericFields.push({
-      type: "markdown",
+      type: 'markdown',
       value: { content, options },
     });
     return this;
@@ -94,7 +94,7 @@ export class MailMessage {
 
   code(content: string, options?: Record<string, any>): this {
     this.payload.genericFields.push({
-      type: "code",
+      type: 'code',
       value: { content, options },
     });
     return this;
@@ -102,7 +102,7 @@ export class MailMessage {
 
   link(title: string, href: string): this {
     this.payload.genericFields.push({
-      type: "link",
+      type: 'link',
       value: { href, title },
     });
     return this;
@@ -110,7 +110,7 @@ export class MailMessage {
 
   inlineCode(code: string): this {
     this.payload.genericFields.push({
-      type: "code-inline",
+      type: 'code-inline',
       value: { content: code },
     });
     return this;
@@ -124,7 +124,7 @@ export class MailMessage {
 
   greeting(greeting: string): this {
     this.payload?.genericFields.push({
-      type: "greeting",
+      type: 'greeting',
       value: { text: greeting },
     });
     return this;
@@ -137,7 +137,7 @@ export class MailMessage {
    */
   line(text: string, options?: Record<string, any>): this {
     this.payload?.genericFields.push({
-      type: "text",
+      type: 'text',
       value: { text, options },
     });
     return this;
@@ -145,7 +145,7 @@ export class MailMessage {
 
   html(html: string): this {
     if (this.payload.genericFields) {
-      this.payload?.genericFields.push({ type: "html", value: { text: html } });
+      this.payload?.genericFields.push({ type: 'html', value: { text: html } });
     }
     return this;
   }
@@ -158,7 +158,7 @@ export class MailMessage {
    */
   button(text: string, link: string): this {
     this.payload.genericFields.push({
-      type: "button",
+      type: 'button',
       value: { text, link },
     });
     return this;
@@ -172,7 +172,7 @@ export class MailMessage {
   table(data: string[][], header = true): this {
     if (this.payload.genericFields) {
       this.payload.genericFields.push({
-        type: "table",
+        type: 'table',
         value: { rows: data, header },
       });
     }
@@ -186,7 +186,7 @@ export class MailMessage {
     return this;
   }
 
-  dark(dark: boolean = true): this {
+  dark(dark = true): this {
     this.payload.meta = { ...this.payload.meta, isDarkThemed: dark };
     return this;
   }
@@ -196,20 +196,15 @@ export class MailMessage {
     return this;
   }
 
-  toHtml(): string {
-    return this.getMailData().html;
-  }
-
   /**
    * Method to compile templates
    */
-  private _compileTemplate(): string {
+  private async _compileTemplate(): Promise<string> {
     if (this.compiledHtml) return this.compiledHtml;
-    const config = MailerService.getConfig();
 
     if (this.mailType === GENERIC_MAIL) {
-      const templateConfig = IntentConfig.get("mailers.template");
-      const html = render(
+      const templateConfig = IntentConfig.get('mailers.template');
+      const html = await render(
         IntentMailComponent({
           header: { value: { title: templateConfig.appName } },
           footer: {
@@ -221,7 +216,7 @@ export class MailMessage {
           preview: this.payload.meta.preview,
           components: this.payload.genericFields,
           theme: { isDarkThemed: this.payload.meta.isDarkThemed },
-        })
+        }),
       );
       this.compiledHtml = html;
       return this.compiledHtml;
@@ -229,7 +224,7 @@ export class MailMessage {
 
     if (this.mailType === VIEW_BASED_MAIL && this.viewFile) {
       const component = this.viewFile;
-      const html = render(component(this.payload));
+      const html = await render(component(this.payload));
 
       this.compiledHtml = html;
       return this.compiledHtml;
@@ -245,14 +240,14 @@ export class MailMessage {
   /**
    * Returns the maildata payload
    */
-  getMailData(): MailData {
-    if (typeof (this as any).handle === "function") {
-      (this as any)["handle"]();
+  async getMailData(): Promise<MailData> {
+    if (typeof (this as any).handle === 'function') {
+      (this as any)['handle']();
     }
 
     return {
       subject: this.mailSubject,
-      html: this._compileTemplate(),
+      html: await this._compileTemplate(),
       attachments: this.attachments,
     };
   }
@@ -261,7 +256,7 @@ export class MailMessage {
    * Render the email template.
    * Returns the complete html of the mail.
    */
-  render(): string {
-    return this._compileTemplate();
+  async render(): Promise<string> {
+    return await this._compileTemplate();
   }
 }
