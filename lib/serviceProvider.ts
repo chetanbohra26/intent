@@ -52,7 +52,7 @@ export const IntentProvidersFactory = (
         LocalizationService,
         EventQueueWorker,
         LoggerService,
-        Limiter
+        Limiter,
       );
     }
 

@@ -104,7 +104,7 @@ export class IntentExplorer {
 
   lookupLimittedMethods(
     instance: Record<string, GenericFunction>,
-    key: string
+    key: string,
   ) {
     let methodRef = instance[key];
     const hasCommandMeta = Reflect.hasMetadata(TOKEN_COUNT, instance, key);
